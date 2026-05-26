@@ -34,4 +34,9 @@ A full-stack social platform that allows users to share their thoughts, post upd
 ```git clone [https://github.com/YourUsername/vibely-frontend.git](https://github.com/YourUsername/vibely-frontend.git)```
 ### 2. Install dependencies
 ```npm install```
-
+### 3. Setup Environment Variables
+Create a .env file in the root directory and add your required variables.
+For the Frontend:
+```VITE_API_URL=http://localhost:5000```
+### 4. Start the development server
+```npm run dev```
