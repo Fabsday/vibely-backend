@@ -32,4 +32,6 @@ A full-stack social platform that allows users to share their thoughts, post upd
 
 ### 1. Clone the repository 
 ```git clone [https://github.com/YourUsername/vibely-frontend.git](https://github.com/YourUsername/vibely-frontend.git)```
+### 2. Install dependencies
+```npm install```
 
