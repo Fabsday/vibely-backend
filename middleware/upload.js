@@ -1,33 +1,26 @@
 const multer = require('multer');
-const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype =allowedTypes.test(file.mimetype);
-
-   if (extname && mimetype) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Hanya diperbolehkan upload file gambar (JPEG, JPG, PNG, GIF)!'));
-    }
-};
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'vibely_posts', 
+        allowed_formats: ['jpeg', 'jpg', 'png', 'gif'], 
+    },
+});
 
 
 const upload = multer({
     storage: storage,
-    fileFilter: fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 } 
 });
 

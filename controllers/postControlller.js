@@ -1,6 +1,5 @@
 const db = require('../config/db');
-const fs = require('fs');
-const path = require('path');
+
 
 
 const getPosts = async (req, res) => {
@@ -27,13 +26,13 @@ const getPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
     const { title, content } = req.body;
-    const image = req.file ? req.file.filename : null;
+    const image = req.file ? req.file.path : null;
     
-    // Ini keajaibannya: Mengambil ID otomatis dari akun yang sedang login!
+    
     const userId = req.user.id; 
 
     try {
-        // Tambahkan kolom user_id di perintah INSERT
+        
         await db.query(
             'INSERT INTO posts (title, content, image, user_id) VALUES (?, ?, ?, ?)',
             [title, content, image, userId]
@@ -51,33 +50,15 @@ const deletePost = async (req, res) => {
     const { id } = req.params; 
 
     try {
-        
         const [rows] = await db.query('SELECT image FROM posts WHERE id = ?', [id]);
         
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Postingan tidak ditemukan.' });
         }
 
-        const imageFileName = rows[0].image; 
-
         
         await db.query('DELETE FROM posts WHERE id = ?', [id]);
         
-        
-        if (imageFileName) {
-           
-            const filePath = path.join(__dirname, '../uploads', imageFileName);
-            
-            
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error('Peringatan: Gagal menghapus gambar fisik:', err);
-                } else {
-                    console.log(`Berhasil menghapus gambar fisik: ${imageFileName}`);
-                }
-            });
-        }
-
         return res.status(200).json({ message: 'Postingan berhasil dihapus bersih!' });
     } catch (error) {
         console.error(error);
